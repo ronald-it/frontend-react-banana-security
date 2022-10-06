@@ -4,7 +4,7 @@ import { useHistory, Link } from 'react-router-dom';
 import {AuthContext} from "../context/AuthContext";
 
 function NavBar() {
-  const {authorization} = React.useContext(AuthContext);
+  const {authorization, userLogout} = React.useContext(AuthContext);
   console.log(authorization);
 
 
@@ -30,7 +30,7 @@ function NavBar() {
         </button>}
         {authorization === true && <button
             type="button"
-            onClick={() => history.push('/signin')}
+            onClick={userLogout}
         >
           Log out
         </button>}
