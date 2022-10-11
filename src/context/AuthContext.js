@@ -26,6 +26,7 @@ export function AuthContextProvider({children}) {
         toggleAuth: toggleIsAuth,
         userLogin: loginUser,
         userLogout: logoutUser,
+        user: null,
     }
 
     return (
