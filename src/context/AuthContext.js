@@ -18,8 +18,10 @@ export function AuthContextProvider({children}) {
     async function fetchUserData(id, token) {
         try {
             const result = await axios.get(`http://localhost:3000/600/users/${id}`, {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    }
                 }
             );
             console.log(result);
