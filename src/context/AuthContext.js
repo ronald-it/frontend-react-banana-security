@@ -27,6 +27,15 @@ export function AuthContextProvider({children}) {
             console.log(result);
             console.log(token);
             console.log("test test test");
+            toggleIsAuth({
+                authorization: true,
+                user: {
+                    username: result.data.username,
+                    email: result.data.email,
+                    id: result.data.id,
+                }
+            })
+            history.push("/profile")
         } catch (e) {
             console.error(e);
             console.log(token);
@@ -39,7 +48,6 @@ export function AuthContextProvider({children}) {
             authorization: true,
         });
         console.log("Gebruiker is ingelogd");
-        history.push("/profile");
         console.log(token);
         localStorage.setItem('token', token);
         const decoded = jwt_decode(token);
@@ -52,7 +60,9 @@ export function AuthContextProvider({children}) {
     function logoutUser() {
         toggleIsAuth({
             authorization: false,
+            user: null,
         });
+        localStorage.removeItem('token');
         console.log("Gebruiker is uitgelogd");
         history.push("/");
     }
