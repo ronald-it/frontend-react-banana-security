@@ -1,8 +1,10 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import axios from "axios";
 
 function SignUp() {
+
+    const history = useHistory();
 
     const [emailValue, setEmailValue] = React.useState('');
     const [usernameValue, setUsernameValue] = React.useState('');
@@ -11,11 +13,12 @@ function SignUp() {
     async function fetchData() {
         try {
             const result = await axios.post('http://localhost:3000/register', {
-                email: {emailValue},
-                password: {passwordValue},
-                username: {usernameValue},
+                email: emailValue,
+                password: passwordValue,
+                username: usernameValue,
             });
             console.log(result);
+            history.push("/signin")
         } catch (e) {
             console.error(e);
         }
