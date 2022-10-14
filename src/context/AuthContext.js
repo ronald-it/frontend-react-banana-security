@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
 import jwt_decode from 'jwt-decode';
 import axios from "axios";
@@ -11,8 +11,34 @@ export function AuthContextProvider({children}) {
     const [isAuth, toggleIsAuth] = useState({
         authorization: false,
         user: null,
+        status: 'pending',
     });
     const history = useHistory();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        console.log(token);
+        const decoded = jwt_decode(token);
+        console.log(decoded);
+        const id = decoded.sub;
+        console.log(id);
+
+        async function fetchUserData() {
+            try {
+                const response = await axios.get(`http://localhost:3000/600/users/${id}`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }
+                );
+                console.log(response);
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }, [])
 
 
     async function fetchUserData(id, token) {
@@ -28,13 +54,14 @@ export function AuthContextProvider({children}) {
             console.log(token);
             console.log("test test test");
             toggleIsAuth({
-                authorization: true,
-                user: {
-                    username: result.data.username,
-                    email: result.data.email,
-                    id: result.data.id,
+                    authorization: true,
+                    user: {
+                        username: result.data.username,
+                        email: result.data.email,
+                        id: result.data.id,
+                    }
                 }
-            })
+            )
             history.push("/profile")
         } catch (e) {
             console.error(e);
