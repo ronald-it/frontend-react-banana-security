@@ -16,30 +16,49 @@ export function AuthContextProvider({children}) {
     const history = useHistory();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        console.log(token);
-        const decoded = jwt_decode(token);
-        console.log(decoded);
-        const id = decoded.sub;
-        console.log(id);
+            const token = localStorage.getItem('token');
+            console.log(token);
+            const decoded = jwt_decode(token);
+            console.log(decoded);
+            const id = decoded.sub;
+            console.log(id);
 
-        async function fetchUserData() {
-            try {
-                const response = await axios.get(`http://localhost:3000/600/users/${id}`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
+            async function fetchUserData() {
+                try {
+                    const response = await axios.get(`http://localhost:3000/600/users/${id}`, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                            }
                         }
-                    }
-                );
-                console.log(response);
+                    );
+                    console.log(response);
+                    toggleIsAuth({
+                            user: {
+                                username: response.data.username,
+                                email: response.data.email,
+                                id: response.data.id,
+                            },
+                            authorization: true,
+                            status: 'done',
+                        }
+                    )
 
-            } catch (e) {
-                console.error(e);
+                } catch (e) {
+                    console.error(e);
+                    toggleIsAuth({
+                            authorization: false,
+                            user: null,
+                            status: 'done',
+                        }
+                    );
+                }
             }
-        }
-    }, [])
 
+            fetchUserData();
+        },
+        []
+    )
 
     async function fetchUserData(id, token) {
         try {
@@ -104,7 +123,7 @@ export function AuthContextProvider({children}) {
 
     return (
         <AuthContext.Provider value={data}>
-            {children}
+            {isAuth.status === 'done' ? children : <p>Loading...</p>}
         </AuthContext.Provider>
     );
 }
