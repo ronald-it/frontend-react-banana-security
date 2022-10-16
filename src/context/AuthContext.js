@@ -86,6 +86,12 @@ export function AuthContextProvider({children}) {
             console.error(e);
             console.log(token);
             console.log("test test test");
+            toggleIsAuth({
+                    authorization: false,
+                    user: null,
+                    status: 'done',
+                }
+            );
         }
     }
 
