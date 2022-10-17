@@ -6,8 +6,12 @@ import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import './App.css';
+import {PrivateRoute} from "./components/PrivateRoute";
+import {AuthContext} from "./context/AuthContext";
 
 function App() {
+  const {authorization} = React.useContext(AuthContext);
+
   return (
     <>
       <NavBar />
@@ -16,9 +20,9 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/profile">
+          <PrivateRoute path="/profile" authorization={authorization}>
             <Profile />
-          </Route>
+          </PrivateRoute>
           <Route exact path="/signin">
             <SignIn />
           </Route>
