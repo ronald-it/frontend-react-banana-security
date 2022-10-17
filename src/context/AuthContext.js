@@ -18,44 +18,19 @@ export function AuthContextProvider({children}) {
     useEffect(() => {
             const token = localStorage.getItem('token');
             console.log(token);
-            const decoded = jwt_decode(token);
-            console.log(decoded);
-            const id = decoded.sub;
-            console.log(id);
-
-            async function fetchUserData() {
-                try {
-                    const response = await axios.get(`http://localhost:3000/600/users/${id}`, {
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
-                            }
-                        }
-                    );
-                    console.log(response);
-                    toggleIsAuth({
-                            user: {
-                                username: response.data.username,
-                                email: response.data.email,
-                                id: response.data.id,
-                            },
-                            authorization: true,
-                            status: 'done',
-                        }
-                    )
-
-                } catch (e) {
-                    console.error(e);
-                    toggleIsAuth({
-                            authorization: false,
-                            user: null,
-                            status: 'done',
-                        }
-                    );
-                }
+            if (token) {
+                const decoded = jwt_decode(token);
+                console.log(decoded);
+                const id = decoded.sub;
+                console.log(id);
+                fetchUserData(id, token);
+            } else {
+                toggleIsAuth({
+                    authorization: false,
+                    user: null,
+                    status: 'done',
+                })
             }
-
-            fetchUserData();
         },
         []
     )
@@ -78,7 +53,8 @@ export function AuthContextProvider({children}) {
                         username: result.data.username,
                         email: result.data.email,
                         id: result.data.id,
-                    }
+                    },
+                    status: 'done',
                 }
             )
             history.push("/profile")
@@ -113,6 +89,7 @@ export function AuthContextProvider({children}) {
         toggleIsAuth({
             authorization: false,
             user: null,
+            status: 'done',
         });
         localStorage.removeItem('token');
         console.log("Gebruiker is uitgelogd");

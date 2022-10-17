@@ -6,11 +6,7 @@ import axios from "axios";
 function Profile() {
     const {user} = React.useContext(AuthContext);
     console.log(user.username, user.email);
-    const [profileData, setProfileData] = useState({
-        authorization: false,
-        user: null,
-        status: 'pending',
-    });
+    const [data, setData] = React.useState({});
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -26,25 +22,9 @@ function Profile() {
                     }
                 );
                 console.log(result);
-                setProfileData({
-                        authorization: true,
-                        user: {
-                            username: result.data.username,
-                            email: result.data.id,
-                            id: result.data.id,
-                        },
-                        status: 'done'
-                    }
-                )
-
+                setData(result.data);
             } catch (e) {
                 console.error(e);
-                setProfileData({
-                        authorization: false,
-                        user: null,
-                        status: 'done',
-                    }
-                );
             }
         }
 
@@ -56,13 +36,12 @@ function Profile() {
             <h1>Profielpagina</h1>
             <section>
                 <h2>Gegevens</h2>
-                <p><strong>Gebruikersnaam:</strong> {profileData.user.username}</p>
-                <p><strong>Email:</strong> {profileData.user.email}</p>
+                <p><strong>Gebruikersnaam:</strong> {user.username}</p>
+                <p><strong>Email:</strong> {user.email}</p>
             </section>
             <section>
-                <h2>Strikt geheime profiel-content</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab alias cum debitis dolor dolore fuga id
-                    molestias qui quo unde?</p>
+                <h2>{data.title}</h2>
+                <p>{data.content}</p>
             </section>
             <p>Terug naar de <Link to="/">Homepagina</Link></p>
         </>
